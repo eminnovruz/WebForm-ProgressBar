@@ -8,31 +8,53 @@
     </div>
     <br />
     <button type="button" onclick="startProgress()">Start Progress</button>
+    <br /><br />
+    <div id="timer">Elapsed Time: 0s</div>
 
     <script type="text/javascript">
         var isProgressing = false; 
-        var maxProgress = 69;
+        var maxProgress = 100;
         var stepTime = 100;
+        var startTime; 
+        var timerInterval; 
 
         function startProgress() {
             if (isProgressing) return;
 
-            isProgressing = true;
+            isProgressing = true; 
             var elem = document.getElementById("progressBar");
+            var timerElem = document.getElementById("timer");
             var width = 1;
-            elem.innerHTML = width;
+            elem.innerHTML = width; 
             elem.style.width = (width / maxProgress) * 100 + '%';
+
+            startTime = new Date();
+
+            timerInterval = setInterval(updateTimer, 100);
 
             var interval = setInterval(function () {
                 if (width >= maxProgress) {
                     clearInterval(interval);
+                    clearInterval(timerInterval); 
                     isProgressing = false; 
                 } else {
                     width++;
                     elem.innerHTML = width; 
                     elem.style.width = (width / maxProgress) * 100 + '%'; 
                 }
-            }, stepTime);
+            }, stepTime); 
+        }
+
+        function updateTimer() {
+            if (isProgressing) {
+                var currentTime = new Date();
+                var elapsedMilliseconds = currentTime - startTime;
+                var elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
+                var milliseconds = elapsedMilliseconds % 1000;
+                var minutes = Math.floor(elapsedSeconds / 60);
+                var seconds = elapsedSeconds % 60;
+                document.getElementById("timer").innerHTML = `Elapsed Time: ${minutes}m ${seconds}s ${Math.floor(milliseconds / 10)}ms`;
+            }
         }
     </script>
 </asp:Content>
